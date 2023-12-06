@@ -228,6 +228,7 @@ kBackLeftSteerMotorId = 15
 kBackRightDriveMotorId = 16
 kBackRightSteerMotorId = 17
 
+
 kDriveSupplyCurrentLimitConfiguration = SupplyCurrentLimitConfiguration(
     enable=True, currentLimit=35, triggerThresholdCurrent=60, triggerThresholdTime=0.1
 )
@@ -847,3 +848,7 @@ kDriveDistanceAutoBalance = 5
 kSpeedFactorAutoBalance = 0.1
 
 kTiltThresholdAutoBalance = 10
+
+
+
+kIntakeMotorName = "IntakeMotor"
