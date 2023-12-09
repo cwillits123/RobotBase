@@ -9,20 +9,25 @@ import constants
 
 class IntakeSubsystem(SubsystemBase):
     class IntakeMode(Enum):
-        Dep = auto()
-        Ret = auto()
-        Rev = auto()
+        Deployed = auto()  #Deployed
+        Neutral = auto()  #Retracted or Neutral
+        Reversed = auto()  #Reversed
 
     def __init__(self):
         SubsystemBase.__init__(self)
         self.setName(__class__.__name__)
 
-        self.intakeMotor = createMotor(
-            constants.kIntakeCANID,
+        self.intakeMotor = createMotor(  #Creating the intake Motor
+            constants.kIntakeMotorId,
             constants.kCANivoreName,
         )
+
+        self.intakeSolenoidMag = Solenoid(  #Creating the solenoid
+            PneumaticsModuleType.REVPH, constants.kIntakeSolenoidId
+        )
+
         print(f"Initalizing: {constants.kIntakeMotorName}")
-        if not ctreCheckError(
+        if not ctreCheckError(  #Checking for errors when setting up
             "configFactoryDefault",
             self.intakeMotor.configFactoryDefault(constants.kConfigurationTimeoutLimit),
         ):
@@ -55,33 +60,36 @@ class IntakeSubsystem(SubsystemBase):
         ):
             return
         print(f"{constants.kIntakeMotorName} Initialization Complete")
-        self.state = self.IntakeMode.Ret
+        self.state = self.IntakeMode.Neutral  #Neutral motor position and initial start up
 
     def period(self) -> None:
-        if self.state == self.IntakeMode.Dep:
+        if self.state == self.IntakeMode.Deployed:  #When delpoyed, setting Solenoid to true and setting speeds
+            self.intakeSolenoidMag.set(True)
             self.intakeMotor.set(
                 ControlMode.Velocity,
                 constants.kIntakeMotorSpeed
                 * constants.kIntakeGearRatio
                 * constants.kTalonVelocityPerRPM,
             )
-        elif self.state == self.IntakeMode.Rev:
+        elif self.state == self.IntakeMode.Reversed:  #When reversed, doing same as deployed yet in negative velocity
+            self.intakeSolenoidMag.set(True)
             self.intakeMotor.set(
                 ControlMode.Velocity,
                 -constants.kIntakeMotorSpeed
                 * constants.kIntakeGearRatio
                 * constants.kTalonVelocityPerRPM,
             )
-        elif self.state == self.IntakeMode.Ret:
+        elif self.state == self.IntakeMode.Neutral:  #Setting the motor to neutral
+            self.intakeSolenoidMag.set(False)
             self.intakeMotor.set(
                 ControlMode.Velocity, 0
             )
 
-    def revIntake(self) -> None:
-        self.state = self.IntakeMode.Rev
+    def reversedIntake(self) -> None:
+        self.state = self.IntakeMode.Reversed
     
-    def retIntake(self) -> None:
-        self.state = self.IntakeMode.Ret
+    def neutralIntake(self) -> None:
+        self.state = self.IntakeMode.Neutral
     
-    def depIntake(self) -> None:
-        self.state = self.IntakeMode.Dep
+    def deployedIntake(self) -> None:
+        self.state = self.IntakeMode.Deployed
