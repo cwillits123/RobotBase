@@ -8,7 +8,7 @@ import constants
 
 
 class IntakeSubsystem(SubsystemBase):
-    class Mode(Enum):
+    class IntakeMode(Enum):
         Dep = auto()
         Ret = auto()
         Rev = auto()
@@ -55,14 +55,33 @@ class IntakeSubsystem(SubsystemBase):
         ):
             return
         print(f"{constants.kIntakeMotorName} Initialization Complete")
-        self.state = self.Mode.Ret
+        self.state = self.IntakeMode.Ret
 
     def period(self) -> None:
-        if self.state == self.Mode.Dep:
+        if self.state == self.IntakeMode.Dep:
             self.intakeMotor.set(
                 ControlMode.Velocity,
-                constants.kIntakeSpeed
+                constants.kIntakeMotorSpeed
                 * constants.kIntakeGearRatio
                 * constants.kTalonVelocityPerRPM,
             )
+        elif self.state == self.IntakeMode.Rev:
+            self.intakeMotor.set(
+                ControlMode.Velocity,
+                -constants.kIntakeMotorSpeed
+                * constants.kIntakeGearRatio
+                * constants.kTalonVelocityPerRPM,
+            )
+        elif self.state == self.IntakeMode.Ret:
+            self.intakeMotor.set(
+                ControlMode.Velocity, 0
+            )
 
+    def revIntake(self) -> None:
+        self.state = self.IntakeMode.Rev
+    
+    def retIntake(self) -> None:
+        self.state = self.IntakeMode.Ret
+    
+    def depIntake(self) -> None:
+        self.state = self.IntakeMode.Dep
