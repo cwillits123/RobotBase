@@ -26,7 +26,7 @@ class IntakeSubsystem(SubsystemBase):
             PneumaticsModuleType.REVPH, constants.kIntakeSolenoidId
         )
 
-        print(f"Initalizing: {constants.kIntakeMotorName}")
+        print(f"Initalizing IntakeMotor")
         if not ctreCheckError(  #Checking for errors when setting up
             "configFactoryDefault",
             self.intakeMotor.configFactoryDefault(constants.kConfigurationTimeoutLimit),
@@ -59,7 +59,7 @@ class IntakeSubsystem(SubsystemBase):
             ),
         ):
             return
-        print(f"{constants.kIntakeMotorName} Initialization Complete")
+        print(f"IntakeMotor Initialization Complete")
         self.state = self.IntakeMode.Neutral  #Neutral motor position and initial start up
 
     def period(self) -> None:

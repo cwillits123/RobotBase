@@ -869,14 +869,14 @@ kIndexerPIDSlot = 0
 kIndexerPGain = 0.0001
 kIndexerIGain = 0
 kIndexerDGain = 0
-kIndexerGearRatio = 15
+kIndexerMotorGearRatio = 15
 
 
 kStagingPIDSlot = 0
 kStagingPGain = 0.0001
 kStagingIGain = 0
 kStagingDGain = 0
-kStagingGearRatio = 15
+kStagingMotorGearRatio = 15
 
 
 
