@@ -99,3 +99,85 @@ class IndexerSubsystem(SubsystemBase):
             ),
         ):
             return
+        if not ctreCheckError(
+            "configForwardSwitchLimitSource",
+            self.stagingMotor.configForwardLimitSwitchSource(
+                LimitSwitchSource.Deactivated,
+                LimitSwitchNormal.Disabled,
+                constants.kConfigurationTimeoutLimit,
+            ),
+        ):
+            return
+        if not ctreCheckError(
+            "configReverseSwitchLimitSource",
+            self.stagingMotor.configReverseLimitSwitchSource(
+                LimitSwitchSource.Deactivated,
+                LimitSwitchNormal.Disabled,
+                constants.kConfigurationTimeoutLimit,
+            ),
+        ):
+            return
+        print(f"{constants.kStagingMotorName} Initilization Complete")
+        self.indexerSensor = self.stagingMotor.isRevLimitSwitchClosed
+        self.stagingSensor = self.stagingMotor.isFwdLimitSwitchClosed
+        self.state = self.IndexerMode.Holding
+
+    def period(self) -> None:
+        SmartDashboard.putBoolean("readyToFire", self.stagingSensor() == 0)
+        SmartDashboard.putBoolean("twoBalls", self.stagingSensor() == 0 and self.indexerSensor() == 0)
+
+        if self.state == self.IndexerMode.Feed:
+            self.indexerMotor.set(
+                ControlMode.Velocity,
+                constants.kIndexerMotorSpeed
+                * constants.kIndexerGearRatio
+                * constants.kTalonVelocityPerRPM,
+            )
+            self.stagingMotor.set(
+                ControlMode.Velocity,
+                constants.kStagingMotorSpeed
+                * constants.kStagingGearRatio
+                * constants.kTalonVelocityPerRPM,
+            )
+        elif self.state == self.IndexerMode.Holding:
+            if not (self.indexerSensor() == 0 and self.stagingSensor() == 0):
+                self.indexerMotor.set(
+                    ControlMode.Velocity,
+                    constants.kIndexerMotorSpeed
+                    * constants.kIndexerGearRatio
+                    * constants.kTalonVelocityPerRPM,
+                )
+                self.stagingMotor.set(
+                    ControlMode.Velocity,
+                    -constants.kStagingMotorSpeed
+                    * constants.kStagingGearRatio
+                    * constants.kTalonVelocityPerRPM,
+                )
+            else:
+                self.indexerMotor.set(ControlMode.Velocity, 0)
+                self.stagingMotor.set(ControlMode.Velocity, 0)
+        elif self.state == self.IndexerMode.Reversed:
+            self.indexerMotor.set(
+                ControlMode.Velocity,
+                -constants.kIndexerMotorSpeed,
+                * constants.kIndexerGearRatio
+                * constants.kTalonVelocityPerRPM,
+            )
+            self.stagingMotor.set(
+                ControlMode.Velocity,
+                -constants.kStagingMotorSpeed
+                * constants.kStagingGearRatio
+                * constants.kTalonVelocityPerRPM,
+            )
+        elif self.state == self.IndexerMode.Off:
+            self.indexerMotor.neutralOutput()
+            self.stagingMotor.neutralOutput()
+
+    def motorsOff(self) -> None:
+        self.state = self.IndexerMode.Off
+    def motorsReversed(self) -> None:
+        self.state = self.IndexerMode.Reversed
+    def motorsFeed(self) -> None:
+        self.state = self.IndexerMode.Feed
+    def motorsHolding(self) -> None:
+        self.state = self.IndexerMode.Holding
