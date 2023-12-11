@@ -853,15 +853,15 @@ kTiltThresholdAutoBalance = 10
 kIntakeSolenoidId = 4
 kIntakeMotorId = 18
 kIntakeMotorName = "IntakeMotor"
-kIntakeMotorSpeed = 2000
+kIntakeSpeed = 2000
 """rpm"""
 kIndexerMotorId = 19
 kIndexerMotorName = "IndexerMotor"
-kIndexerMotorSpeed = 1200
+kIndexerSpeed = 1200
 """rpm"""
 kStagingMotorId = 20
 kStagingMotorName = "StagingMotor"
-kStagingMotorSpeed = 1200
+kStagingSpeed = 1200
 """rpm"""
 
 
@@ -869,14 +869,14 @@ kIndexerPIDSlot = 0
 kIndexerPGain = 0.0001
 kIndexerIGain = 0
 kIndexerDGain = 0
-kIndexerMotorGearRatio = 15
+kIndexerGearRatio = 15
 
 
 kStagingPIDSlot = 0
 kStagingPGain = 0.0001
 kStagingIGain = 0
 kStagingDGain = 0
-kStagingMotorGearRatio = 15
+kStagingGearRatio = 15
 
 
 

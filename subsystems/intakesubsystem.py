@@ -67,7 +67,7 @@ class IntakeSubsystem(SubsystemBase):
             self.intakeSolenoidMag.set(True)
             self.intakeMotor.set(
                 ControlMode.Velocity,
-                constants.kIntakeMotorSpeed
+                constants.kIntakeSpeed
                 * constants.kIntakeGearRatio
                 * constants.kTalonVelocityPerRPM,
             )
@@ -75,7 +75,7 @@ class IntakeSubsystem(SubsystemBase):
             self.intakeSolenoidMag.set(True)
             self.intakeMotor.set(
                 ControlMode.Velocity,
-                -constants.kIntakeMotorSpeed
+                -constants.kIntakeSpeed
                 * constants.kIntakeGearRatio
                 * constants.kTalonVelocityPerRPM,
             )
