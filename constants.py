@@ -853,7 +853,7 @@ kTiltThresholdAutoBalance = 10
 kIntakeSolenoidId = 4
 kIntakeMotorId = 18
 kIntakeMotorName = "IntakeMotor"
-kIntakeMotorSpeed = 3000
+kIntakeMotorSpeed = 2000
 """rpm"""
 kIndexerMotorId = 19
 kIndexerMotorName = "IndexerMotor"
