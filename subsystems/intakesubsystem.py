@@ -93,3 +93,5 @@ class IntakeSubsystem(SubsystemBase):
     
     def deployedIntake(self) -> None:
         self.state = self.IntakeMode.Deployed
+
+        
