@@ -21,7 +21,7 @@ from commands.intake.deployintake import DeployIntake
 from commands.intake.retractintake import RetractIntake
 
 from subsystems.drivesubsystem import DriveSubsystem
-from subsystems.visionsubsystem import VisionSubsystem
+#from subsystems.visionsubsystem import VisionSubsystem
 from subsystems.intakesubsystem import IntakeSubsystem
 from subsystems.indexersubsystem import IndexerSubsystem
 
@@ -44,7 +44,7 @@ class RobotContainer:
 
         # The robot's subsystems
         self.drive = DriveSubsystem()
-        self.vision = VisionSubsystem()
+        #self.vision = VisionSubsystem()
         self.intake = IntakeSubsystem()
         self.indexer = IndexerSubsystem()
 
