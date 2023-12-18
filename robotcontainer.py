@@ -1,27 +1,32 @@
-import os
+from commands2 import WaitCommand
 import wpilib
 from wpimath.geometry import Pose2d
 import commands2
 import commands2.button
 
+
 import constants
 
 from commands.resetdrive import ResetDrive
+from commands.indexer.feedforward import FeedForward
+from commands.indexer.holdball import HoldBall
 from commands.drivedistance import DriveDistance
-from commands.drive.robotrelativedrive import RobotRelativeDrive
-from commands.drive.fieldrelativedrive import FieldRelativeDrive
-from commands.drive.anglealign import AngleAlignDrive
+
+from commands.reverseballpath import ReverseBallPath
+from commands.normalballpath import NormalBallPath
+from commands.shootball import ShootBall
 from commands.defensestate import DefenseState
-from commands.auto.autonomousaction import AutonomousRoutine
+
+from commands.intake.deployintake import DeployIntake
+from commands.intake.retractintake import RetractIntake
 
 from subsystems.drivesubsystem import DriveSubsystem
-from subsystems.loggingsubsystem import LoggingSubsystem
+from subsystems.visionsubsystem import VisionSubsystem
 from subsystems.intakesubsystem import IntakeSubsystem
 from subsystems.indexersubsystem import IndexerSubsystem
 
-# from subsystems.visionsubsystem import VisionSubsystem
-
 from operatorinterface import OperatorInterface
+from util.helpfultriggerwrappers import SmartDashboardButton
 
 
 class RobotContainer:
@@ -33,46 +38,55 @@ class RobotContainer:
     """
 
     def __init__(self) -> None:
+
         # The operator interface (driver controls)
         self.operatorInterface = OperatorInterface()
 
         # The robot's subsystems
         self.drive = DriveSubsystem()
+        self.vision = VisionSubsystem()
         self.intake = IntakeSubsystem()
-        # self.vision = VisionSubsystem(self.drive)
-        self.log = LoggingSubsystem(self.operatorInterface)
+        self.indexer = IndexerSubsystem()
+
 
         # Autonomous routines
 
         # A simple auto routine that drives forward a specified distance, and then stops.
-        self.simpleAuto = commands2.SequentialCommandGroup(
-            ResetDrive(self.drive),
-            DriveDistance(
-                -4 * constants.kWheelCircumference,
-                0.2,
-                DriveDistance.Axis.X,
-                self.drive,
+        self.simpleAuto = commands2.ParallelCommandGroup(
+            commands2.SequentialCommandGroup(
+                ResetDrive(self.drive),
+                HoldBall(self.indexer),
+                DeployIntake(self.intake),
+                DriveDistance(
+                    4 * constants.kWheelCircumference,
+                    constants.kAutoDriveSpeedFactor,
+                    DriveDistance.Axis.X,
+                    self.drive,
+                ),
+                RetractIntake(self.intake),
+                commands2.WaitCommand(2),
+                FeedForward(self.indexer),
+                commands2.WaitCommand(2),
+                HoldBall(self.indexer),
             ),
+            
         )
+
+        # A complex auto routine that drives to the target, drives forward, waits, drives back
+    
 
         # Chooser
         self.chooser = wpilib.SendableChooser()
 
         # Add commands to the autonomous command chooser
-        pathsPath = os.path.join(wpilib.getDeployDirectory(), "pathplanner")
-        for file in os.listdir(pathsPath):
-            relevantName = file.split(".")[0]
-            self.chooser.addOption(
-                relevantName,
-                commands2.SequentialCommandGroup(
-                    commands2.ParallelDeadlineGroup(
-                        commands2.WaitCommand(14.9),
-                        [AutonomousRoutine(self.drive, relevantName, [])],
-                    ),
-                    DefenseState(self.drive),
-                ),
-            )
-
+        self.chooser.addOption("Complex Auto", self.complexAuto)
+        self.chooser.addOption("Target Auto", self.driveToTarget)
+        self.chooser.addOption(
+            "2 Ball Left Hanger Outtake Auto", self.twoBLHangerOuttake
+        )
+        self.chooser.addOption("4 Ball Left Noninvasive Auto", self.fourBLNoninvasive)
+        self.chooser.addOption("5 Ball Right Standard Auto", self.fiveBRStandard)
+        self.chooser.addOption("3 Ball Right Standard Auto", self.threeBRStandard)
         self.chooser.setDefaultOption("Simple Auto", self.simpleAuto)
 
         # Put the chooser on the dashboard
@@ -80,20 +94,9 @@ class RobotContainer:
 
         self.configureButtonBindings()
 
-        self.drive.setDefaultCommand(
-            FieldRelativeDrive(
-                self.drive,
-                lambda: self.operatorInterface.chassisControls.forwardsBackwards()
-                * constants.kTurboSpeedMultiplier,
-                lambda: self.operatorInterface.chassisControls.sideToSide()
-                * constants.kTurboSpeedMultiplier,
-                self.operatorInterface.chassisControls.rotationX,
-            )
-        )
-        wpilib.DataLogManager.start()
-        wpilib.DataLogManager.logNetworkTables(True)
-        wpilib.DriverStation.silenceJoystickConnectionWarning(True)
+       
 
+       
     def configureButtonBindings(self):
         """
         Use this method to define your button->command mappings. Buttons can be created by
@@ -101,39 +104,37 @@ class RobotContainer:
         and then passing it to a JoystickButton.
         """
 
-        commands2.button.JoystickButton(*self.operatorInterface.turboSpeed).whileHeld(
-            FieldRelativeDrive(
-                self.drive,
-                lambda: self.operatorInterface.chassisControls.forwardsBackwards()
-                * constants.kNormalSpeedMultiplier,
-                lambda: self.operatorInterface.chassisControls.sideToSide()
-                * constants.kNormalSpeedMultiplier,
-                self.operatorInterface.chassisControls.rotationX,
-            )
-        )
-
         commands2.button.JoystickButton(
-            *self.operatorInterface.fieldRelativeCoordinateModeControl
-        ).toggleWhenPressed(
-            RobotRelativeDrive(
-                self.drive,
-                self.operatorInterface.chassisControls.forwardsBackwards,
-                self.operatorInterface.chassisControls.sideToSide,
-                self.operatorInterface.chassisControls.rotationX,
-            )
-        )
+            *self.operatorInterface.deployIntakeControl,
+        ).whenHeld(DeployIntake(self.intake)).whenReleased(RetractIntake(self.intake))
 
-        commands2.button.JoystickButton(
-            *self.operatorInterface.alignClosestWaypoint
-        ).whileHeld(
-            AngleAlignDrive(
-                self.drive,
-                lambda: self.operatorInterface.chassisControls.forwardsBackwards()
-                * constants.kNormalSpeedMultiplier,
-                lambda: self.operatorInterface.chassisControls.sideToSide()
-                * constants.kNormalSpeedMultiplier,
+        (
+            commands2.button.JoystickButton(
+                *self.operatorInterface.deployIntakeControl,
+            ).and_(
+                commands2.button.JoystickButton(
+                    *self.operatorInterface.reverseBallPath,
+                )
             )
-        )
+        ).whenActive(ReverseBallPath(self.intake, self.indexer))
+
+        (
+            commands2.button.JoystickButton(
+                *self.operatorInterface.deployIntakeControl,
+            ).and_(
+                commands2.button.JoystickButton(
+                    *self.operatorInterface.reverseBallPath,
+                ).not_()
+            )
+        ).whenActive(
+            NormalBallPath(self.intake, self.indexer)
+        )  # when let go of just the reverse button, go back to normal ball path
+
+        
+
+        
+
+       
 
         commands2.button.JoystickButton(*self.operatorInterface.resetGyro).whenPressed(
             ResetDrive(self.drive, Pose2d(0, 0, 0))
@@ -143,5 +144,16 @@ class RobotContainer:
             *self.operatorInterface.defenseStateControl
         ).whileHeld(DefenseState(self.drive))
 
+        
+
+        
+
+        
+
+        commands2.button.JoystickButton(*self.operatorInterface.shootBall).whenHeld(
+            ShootBall(self.indexer)
+        ).whenReleased(HoldBall(self.indexer))
+
+      
     def getAutonomousCommand(self) -> commands2.Command:
         return self.chooser.getSelected()
