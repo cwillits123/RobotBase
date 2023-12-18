@@ -16,6 +16,8 @@ from commands.auto.autonomousaction import AutonomousRoutine
 
 from subsystems.drivesubsystem import DriveSubsystem
 from subsystems.loggingsubsystem import LoggingSubsystem
+from subsystems.intakesubsystem import IntakeSubsystem
+from subsystems.indexersubsystem import IndexerSubsystem
 
 # from subsystems.visionsubsystem import VisionSubsystem
 
@@ -36,6 +38,7 @@ class RobotContainer:
 
         # The robot's subsystems
         self.drive = DriveSubsystem()
+        self.intake = IntakeSubsystem()
         # self.vision = VisionSubsystem(self.drive)
         self.log = LoggingSubsystem(self.operatorInterface)
 

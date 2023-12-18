@@ -1,80 +1,10 @@
 {
-  "alignClosestWaypoint": [
-    2,
-    {
-      "Button": 3
-    },
-    "replace me"
-  ],
-  "armDemo": [
-    2,
-    {
-      "Button": 7
-    },
-    "replace me"
-  ],
-  "armDoubleSubstation": [
-    2,
+  "autoBallIntake": [
+    0,
     {
       "Button": 4
     },
-    "replace me"
-  ],
-  "armFudgeFactorIncrease": [
-    2,
-    {
-      "Button": 11
-    },
-    "POV up"
-  ],
-  "armFudgeFactorDecrease": [
-    2,
-    {
-      "Button": 13
-    },
-    "POV down"
-  ],
-  "armGroundCone": [
-    2,
-    {
-      "POV": [0, 90]
-    },
-    "replace me"
-  ],
-  "armGroundIntake": [
-    2,
-    {
-      "POV": [0, 180]
-    },
-    "replace me"
-  ],
-  "armMid": [
-    2,
-    {
-      "POV": [0, 270]
-    },
-    "replace me"
-  ],
-  "armOverride": [
-    2,
-    {
-      "Button": 1
-    },
-    "replace me"
-  ],
-  "armSingleSubstation": [
-    2,
-    {
-      "Button": 5
-    },
-    "replace me"
-  ],
-  "armTop": [
-    2,
-    {
-      "POV": [0, 0]
-    },
-    "replace me"
+    "right button on top of joystick (ThrustmasterT16000M)"
   ],
   "chassisForwardsBackwards": [
     0,
@@ -91,9 +21,9 @@
     "Joystick Horizontal (ThrustmasterTWCSThrottle)"
   ],
   "chassisXRotation": [
-    2,
+    1,
     {
-      "Axis": 5
+      "Axis": 0
     },
     "Joystick Horizontal (ThrustmasterTWCSThrottle)"
   ],
@@ -104,6 +34,13 @@
     },
     "Joystick Vertical (ThrustmasterTWCSThrottle)"
   ],
+  "decreaseShooterSpeed": [
+    1,
+    {
+      "Button": 4
+    },
+    "Bottom POV left (ThrustmasterTWCSThrottle)"
+  ],
   "defenseStateControl": [
     0,
     {
@@ -111,67 +48,151 @@
     },
     "left button on top of joystick (ThrustmasterT16000M)"
   ],
-  "fieldRelativeCoordinateModeControl": [
+  "deployIntake": [
+    1,
+    {
+      "Button": 1
+    },
+    "Ring (ThrustmasterTWCSThrottle)"
+  ],
+  "distanceOffset": [
+    1,
+    {
+      "Axis": 1
+    },
+    "Stick Y Axis (Thrustmaster)"
+  ],
+  "driveToTargetControl": [
     0,
+    {
+      "Button": 2
+    },
+    "B (Xbox)"
+  ],
+  "fieldRelativeCoordinateModeControl": [
+    1,
     {
       "Button": 6
     },
     "Middle Down (ThrustmasterTWCSThrottle)"
   ],
-  "lightsCone": [
+  "holdBothClimbersPosition": [
     0,
     {
-      "POV": [0, 90]
+      "Button": 5
     },
-    "replace me"
+    "right button set, right top (ThrustmasterT16000M)"
   ],
-  "lightsCube": [
+  "increaseShooterSpeed": [
+    1,
+    {
+      "Button": 5
+    },
+    "Bottom POV right (ThrustmasterTWCSThrottle)"
+  ],
+  "leftClimberToHangingPosition": [
     0,
     {
-      "POV": [0, 270]
+      "Button": 15
     },
-    "replace me"
+    "left button set, middle bottom (ThrustmasterT16000M)"
   ],
-  "resetArm": [
-    2,
+  "leftClimberToNextRungCapturePosition": [
+    0,
     {
-      "Button": 8
+      "Button": 12
     },
-    "replace me"
+    "left button set, middle top (ThrustmasterT16000M)"
+  ],
+  "moveBothClimbersToMiddleRungCapturePosition": [
+    0,
+    {
+      "Button": 7
+    },
+    "right button set, left top (ThrustmasterT16000M)"
+  ],
+  "moveBothClimbersToMiddleRungHangPosition": [
+    0,
+    {
+      "Button": 6
+    },
+    "right button set, middle top (ThrustmasterT16000M)"
+  ],
+  "pivotBothClimbers": [
+    0,
+    {
+      "Button": 9
+    },
+    "right button set, left bottom (ThrustmasterT16000M)"
   ],
   "resetGyro": [
-    0,
+    1,
     {
       "Button": 10
     },
     "Middle POV left (ThrustmasterTWCSThrottle)"
   ],
+  "resetShooterSpeed": [
+    1,
+    {
+      "Button": 3
+    },
+    "Bottom POV up (ThrustmasterTWCSThrottle)"
+  ],
+  "reverseBallPath": [
+    1,
+    {
+      "Button": 2
+    },
+    "Pinky (ThrustmasterTWCSThrottle)"
+  ],
+  "rightClimberToHangingPosition": [
+    0,
+    {
+      "Button": 14
+    },
+    "left button set, right bottom (ThrustmasterT16000M)"
+  ],
+  "rightClimberToNextRungCapturePosition": [
+    0,
+    {
+      "Button": 13
+    },
+    "left button set, right top (ThrustmasterT16000M)"
+  ],
+  "shootBall": [
+    0,
+    {
+      "Button": 1
+    },
+    "trigger (ThrustmasterT16000M)"
+  ],
+  "stopMovingParts": [
+    0,
+    {
+      "Button": 8
+    },
+    "right button set, left bottom (ThrustmasterT16000M)"
+  ],
+  "targetRelativeCoordinateModeControl": [
+    1,
+    {
+      "Button": 7
+    },
+    "Middle Up (ThrustmasterTWCSThrottle)"
+  ],
   "turboSpeed": [
-    2,
+    0,
     {
       "Button": 2
     },
     "bottom button on top of joystick (ThrustmasterT16000M)"
   ],
-  "intakeGamepiece": [
-    0,
+  "turretOffset": [
+    1,
     {
-      "Button": 2
+      "Axis": 0
     },
-    "PLACEHOLDER"
-  ],
-  "outtakeGamepiece": [
-    0,
-    {
-      "Button": 1
-    },
-    "PLACEHOLDER"
-  ],
-  "AutoBalance": [
-    0,
-    {
-      "Button": 5
-    },
-    "left bumper(xbox)"
+    "Stick X Axis (Thrustmaster)"
   ]
 }
